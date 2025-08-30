@@ -1,109 +1,63 @@
-# 📂 File Organizer
+# 📂 File Organizer (v1.0.0)
 
-**File Organizer** is a smart document organizer powered by [Google Gemini API](https://ai.google.dev).  
-It analyzes file content and automatically proposes or applies meaningful filenames and folder structures.
+**File Organizer** is a smart document organizer powered by the Google Gemini API.  
+It analyzes file content and automatically **renames** files and (optionally) **organizes** them into a meaningful **folder tree**.
 
 ---
 
 ## ✨ Features
-- 🔍 **Content-aware renaming** (PDF, DOCX, Excel, scanned images)
-- 📝 **Dry-run mode**: safe preview of rename & folder proposals
-- 📁 **Folder tree organization**: optional recommended structure
-- ⚠️ **Error handling**:
-  - Dry-run → logs skipped/failed in `Logs/`
-  - Real run → moves problematic files to `Failed/`
-- 📊 **Cost estimation**: token usage + estimated API cost
-- 📂 **Clean Output**: only final user files
-- 📑 **Logs**: proposals, mapping, errors, and dryrun state in `Logs/`
+- 🔍 **Content-aware renaming** for PDFs, DOCX, Excel, and scanned images (OCR)
+- 📝 **Dry-run**: preview rename proposals and (optionally) a proposed folder tree — no file changes
+- 🚚 **Apply mode**: actually rename and move files into `Output/` (flat) or into a structured **arborescence**
+- ♻️ **Reuse last folder tree**: classify new files into your **previous** arbo (`Logs/arbo_last.json`) and let Gemini add **minimal new subfolders** only if needed
+- 🌱 **Fresh tree mode**: ignore the previous arbo and ask Gemini to suggest a **brand-new** tree from the current batch
+- 🧹 **Safety sweep**: anything left in `Input/` after an apply run is moved to `Failed/` and logged
+- 🧾 **Logging** (apply runs):
+  - `Logs/run_summary_*.txt`
+  - `Logs/errors_realrun_*.(xlsx/csv)` — created even if there are no errors (empty file)
+- 📈 **Progress indicator**: `[SCAN i/N] filename`
+- 💸 **Token usage & cost estimate** printed at the end
 
 ---
 
-## 📂 Folder Structure
+## 📦 Download (Release)
+Grab the user-friendly ZIP from the latest release:  
+👉 **https://github.com/ayoubechehab/File-Organizer/releases/download/v1.0.0/File-Organizer-UserPack-v1.0.0.zip**
+
+---
+
+## 🚀 Quick Start
+1) `pip install -r requirements.txt`  
+2) Open `api_key.txt` and paste your **Gemini API key**  
+3) `python file_organizer.py`  
+4) Answer the prompts:
+   - **Dry-Run?** (safe preview)  
+   - **Apply folder tree?** (No / Yes)  
+   - If **Yes**, choose between:
+     - **Reuse last folder tree** (uses `Logs/arbo_last.json`; Gemini only classifies & adds minimal subfolders if required)  
+     - **Fresh tree** (ignore previous arbo; Gemini builds a new tree from the current batch)
+
+> The script creates these folders on first run: `Input/`, `Output/`, `Failed/`, `Logs/`.  
+> In apply runs, it also **removes `.gitkeep`** to keep things clean.
+
+---
+
+## 📂 Default Folders
 ```
 Input/   -> put your files here
 Output/  -> renamed / organized files
-Failed/  -> files that failed in real run
-Logs/    -> rename proposals, folder mappings, errors, dryrun state
+Failed/  -> files that failed or were left in Input
+Logs/    -> summaries, errors, proposals, and saved arbo (arbo_last.json)
 ```
 
 ---
 
-## 🚀 Usage
-
-### 1. Install dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 2. Set your Gemini API key
-- Open the file `api_key.txt` and paste your key inside:
-  ```
-  sk-xxxxxx
-  ```
-
-### 3. Run
-```bash
-python file_organizer.py
-```
-
-### 4. Workflow
-- The script will ask:
-  - **Dry-run?** → Generate proposals only, logs in `Logs/`
-  - If dry-run → Also generate folder tree proposal?
-  - If real run → Apply folder tree or rename-only?
-
-- After dry-run, check the generated Excel in `Logs/`.  
-  If satisfied, you can apply immediately (0 extra API calls).
-
----
-
-## 📊 Example Summary
-```
-===== SUMMARY (dry-run) =====
-Tokens IN          : 23,415
-Tokens OUT         : 2,103
-Estimated cost     : $0.0035
-Logs folder        : ./Logs
-Rename proposals   : ./Logs/rename_proposals_20250301.xlsx
-Recommended tree   : ./Logs/arbo_mapping_20250301.xlsx
-Error log          : ./Logs/errors_20250301.xlsx
-Saved state        : ./Logs/dryrun_state_20250301.json
-
-Apply these proposals now (no extra API calls)? (y/N):
-```
-
----
-
-## ❓ FAQ
-
-**Q: Does dry-run cost tokens?**  
-Yes. Dry-run still calls Gemini to generate proposals. The "no extra API calls" applies only when you choose to apply those saved results.
-
-**Q: Which files are supported?**  
-- PDF, DOCX, XLSX/XLS, JPG/PNG/TIFF/BMP/WEBP (OCR).  
-- `.txt` and other raw text are intentionally excluded.
-
-**Q: Where are logs saved?**  
-- In `./Logs`: rename proposals, tree mapping, errors, dryrun state JSON.
-
-**Q: What happens to failed files?**  
-- Dry-run: listed in `Logs/errors_*.xlsx`.  
-- Real run: moved to `./Failed`.
-
----
-
-## 🛠 Requirements
-- Python 3.9+  
-- Google Gemini API key  
+## 🧠 How “reuse last tree” works
+- After a run with a tree, the plan is saved to `Logs/arbo_last.json` (+ versioned copies in `Logs/arbo_history/`).  
+- On the next run, if you choose **Reuse last folder tree**, Gemini **classifies the new files into your existing arbo** and creates **tiny additions** (subfolders) **only if necessary**.  
+- Prefer **Fresh tree** when you want to ignore the past and build a new structure based on the current batch only.
 
 ---
 
 ## 📜 License
-MIT License © 2025 Ayoub ECHEHAB
-
----
-
-## 👤 Author
-**Ayoub ECHEHAB**  
-🌐 [www.ayoubechehab.com](https://www.ayoubechehab.com)  
-💼 [LinkedIn](https://www.linkedin.com/in/ayoubechehab)
+MIT License © 2025 Ayoub ECHEHAB — https://www.ayoubechehab.com
