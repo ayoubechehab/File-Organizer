@@ -1,63 +1,103 @@
 # 📂 File Organizer (v1.0.0)
+![Terminal Preview](./file_organizer_terminal_preview.png)
+[![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/)  
+[![License MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)  
+[![Gemini](https://img.shields.io/badge/Gemini%20API-integrated-orange.svg)](https://ai.google.dev/)
 
-**File Organizer** is a smart document organizer powered by the Google Gemini API.  
-It analyzes file content and automatically **renames** files and (optionally) **organizes** them into a meaningful **folder tree**.
-
----
-
-## ✨ Features
-- 🔍 **Content-aware renaming** for PDFs, DOCX, Excel, and scanned images (OCR)
-- 📝 **Dry-run**: preview rename proposals and (optionally) a proposed folder tree — no file changes
-- 🚚 **Apply mode**: actually rename and move files into `Output/` (flat) or into a structured **arborescence**
-- ♻️ **Reuse last folder tree**: classify new files into your **previous** arbo (`Logs/arbo_last.json`) and let Gemini add **minimal new subfolders** only if needed
-- 🌱 **Fresh tree mode**: ignore the previous arbo and ask Gemini to suggest a **brand-new** tree from the current batch
-- 🧹 **Safety sweep**: anything left in `Input/` after an apply run is moved to `Failed/` and logged
-- 🧾 **Logging** (apply runs):
-  - `Logs/run_summary_*.txt`
-  - `Logs/errors_realrun_*.(xlsx/csv)` — created even if there are no errors (empty file)
-- 📈 **Progress indicator**: `[SCAN i/N] filename`
-- 💸 **Token usage & cost estimate** printed at the end
+Smart document organizer powered by **Google Gemini API**.  
+Analyzes file content, **renames** files, and (optionally) **organizes** them into a structured **folder tree** — works in **English** and **French**.
 
 ---
 
-## 📦 Download (Release)
-Grab the user-friendly ZIP from the latest release:  
-👉 **https://github.com/ayoubechehab/File-Organizer/releases/download/v1.0.0/File-Organizer-UserPack-v1.0.0.zip**
+## 🌍 Documentation
+
+- 🇬🇧 You are reading the **English documentation** (main README).  
+- 🇫🇷 [Lire la documentation en Français](./README_FR.md)
+
+---
+
+## 📸 Preview
+
+### Terminal Preview
+![Terminal Preview](./file_organizer_terminal_preview.png)
+
+---
+
+## ✨ Key Features
+
+- **Bilingual support (EN/FR)**  
+  Choose your language at startup — console messages, Gemini prompts, and folder tree adapt.
+
+- **Content-aware renaming**  
+  Generates meaningful filenames based on extracted content, includes detected dates.
+
+- **Smart folder tree**  
+  Optimized categories, limited roots, no duplicates/synonyms, fallback to `Misc/Divers`.
+
+- **Re-use last folder tree**  
+  Ensures consistent classification across runs. Minimal new subfolders added only when needed.
+
+- **OCR fallback**  
+  - Scanned PDFs (requires Poppler + pdf2image + Tesseract)  
+  - Images (JPG/PNG/TIFF…) → OCR with Tesseract  
+  - DOCX embedded images → OCR fallback if text is missing  
+
+- **Safe & clean execution**  
+  - Leftovers in `Input/` → moved to `Failed/` (subpath preserved)  
+  - Empty input folders automatically deleted  
+  - `.gitkeep` files removed in real runs (keeps clean structure for end-users)
+
+- **Comprehensive logs**  
+  - Rename proposals (dry-run)  
+  - Error logs with reasons  
+  - Run summary with token usage & estimated cost  
+  - Last used tree saved (`arbo_last.json`) and reusable
+
+---
+
+## 📁 Folder Structure
+
+```
+Input/   → files to process
+Output/  → renamed/organized files
+Failed/  → errors & leftovers (subpaths preserved)
+Logs/    → reports, proposals, errors, last folder trees
+```
+
+---
+
+## 🔑 Setup
+
+- Python 3.9+  
+- Install dependencies:  
+  ```bash
+  pip install -r requirements.txt
+  ```
+- Install **Tesseract** for OCR (images, DOCX).  
+- Install **Poppler** for OCR on scanned PDFs (optional but recommended).  
+
+Paste your Gemini API key inside `api_key.txt`.
 
 ---
 
 ## 🚀 Quick Start
-1) `pip install -r requirements.txt`  
-2) Open `api_key.txt` and paste your **Gemini API key**  
-3) `python file_organizer.py`  
-4) Answer the prompts:
-   - **Dry-Run?** (safe preview)  
-   - **Apply folder tree?** (No / Yes)  
-   - If **Yes**, choose between:
-     - **Reuse last folder tree** (uses `Logs/arbo_last.json`; Gemini only classifies & adds minimal subfolders if required)  
-     - **Fresh tree** (ignore previous arbo; Gemini builds a new tree from the current batch)
 
-> The script creates these folders on first run: `Input/`, `Output/`, `Failed/`, `Logs/`.  
-> In apply runs, it also **removes `.gitkeep`** to keep things clean.
-
----
-
-## 📂 Default Folders
-```
-Input/   -> put your files here
-Output/  -> renamed / organized files
-Failed/  -> files that failed or were left in Input
-Logs/    -> summaries, errors, proposals, and saved arbo (arbo_last.json)
-```
+1. Place your files in **`Input/`**.  
+2. Run:
+   ```bash
+   python file_organizer.py
+   ```
+3. Follow the interactive prompts:
+   - Choose **EN or FR**  
+   - Dry-run or Apply  
+   - Folder tree enabled or not  
+   - Reuse last tree or generate fresh  
 
 ---
 
-## 🧠 How “reuse last tree” works
-- After a run with a tree, the plan is saved to `Logs/arbo_last.json` (+ versioned copies in `Logs/arbo_history/`).  
-- On the next run, if you choose **Reuse last folder tree**, Gemini **classifies the new files into your existing arbo** and creates **tiny additions** (subfolders) **only if necessary**.  
-- Prefer **Fresh tree** when you want to ignore the past and build a new structure based on the current batch only.
+## 🧑‍💻 Author
 
----
-
-## 📜 License
-MIT License © 2025 Ayoub ECHEHAB — https://www.ayoubechehab.com
+- **Ayoub ECHEHAB**  
+- 🌐 [Website](https://www.ayoubechehab.com)  
+- 💻 [GitHub](https://github.com/ayoubechehab)  
+- 📜 License: **MIT**

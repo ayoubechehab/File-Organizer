@@ -1,0 +1,4 @@
+Quick Start
+1) pip install -r requirements.txt
+2) Paste your Gemini API key into api_key.txt
+3) python file_organizer.py

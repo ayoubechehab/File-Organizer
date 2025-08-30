@@ -1,11 +1,24 @@
 __pycache__/
 *.pyc
-Logs/
-Failed/
-Output/
+
+# Ignore generated files in these folders but keep the folders with .gitkeep
+Logs/*
+!Logs/.gitkeep
+
+Failed/*
+!Failed/.gitkeep
+
+Output/*
+!Output/.gitkeep
+
+Input/*
+!Input/.gitkeep
+
+# Ignore virtual environments
 .venv/
 env/
 venv/
+
+# Ignore OS junk files
 .DS_Store
 Thumbs.db
-api_key.txt
