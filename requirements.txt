@@ -1,0 +1,7 @@
+google-generativeai
+pypdf
+python-docx
+pytesseract
+pillow
+pandas
+openpyxl
